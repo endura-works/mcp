@@ -1,0 +1,334 @@
+{
+  "app": "microtasks",
+  "tools": [
+    {
+      "name": "get_board",
+      "description": "Read the board: its spaces (Essential, projects) and channels, then one space's task trees (id, title, status, depth, due, group; no notes) and groups. Tasks nest three levels: task, microtask, nanotask.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "space": {
+            "type": "string",
+            "description": "Space id or name; default the open one."
+          },
+          "bin": {
+            "type": "boolean",
+            "description": "List that space's Recycle bin instead (ids for restore_task)."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_task",
+      "description": "Read one task: title, note, status, due date, parent, depth, space, group and direct children.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Task id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "put_task",
+      "description": "Create a task (no id) or edit one (with id). parent makes it a sub-task (three levels at most). children adds a whole breakdown in one call (at most 100 tasks). A parent's status is derived from its children. The app places boxes; never send coordinates.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Edit this task; omit to create."
+          },
+          "text": {
+            "type": "string",
+            "description": "Title, at most 20 words."
+          },
+          "note": {
+            "type": "string",
+            "description": "Detail, Markdown subset, at most 500 words."
+          },
+          "status": {
+            "type": "string",
+            "description": "Leaf only.",
+            "enum": [
+              "Todo",
+              "In progress",
+              "Done",
+              "Postponed"
+            ]
+          },
+          "due": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "YYYY-MM-DD, or null to clear."
+          },
+          "children": {
+            "type": "array",
+            "description": "New sub-tasks under it.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text"
+              ],
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "Title, at most 20 words."
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Detail, Markdown subset, at most 500 words."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Leaf only.",
+                  "enum": [
+                    "Todo",
+                    "In progress",
+                    "Done",
+                    "Postponed"
+                  ]
+                },
+                "due": {
+                  "type": "string",
+                  "description": "YYYY-MM-DD."
+                },
+                "children": {
+                  "type": "array",
+                  "description": "Its own sub-tasks, same shape.",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "parent": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Parent task id; null makes it a root."
+          },
+          "space": {
+            "type": "string",
+            "description": "Space id or name for a new root, or to move a task with its sub-tasks; default the open one."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_task",
+      "description": "Move a task and its sub-tasks to the Recycle bin (recoverable with restore_task). Never a hard delete.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Task id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "restore_task",
+      "description": "Bring a task (and its sub-tasks) back from the Recycle bin. Find ids with get_board {bin: true}.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Binned task id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "put_group",
+      "description": "Create a group (no id) or edit one: a named dashed box round root tasks of one space, filed in a channel. tasks replaces its membership.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Edit this group; omit to create."
+          },
+          "name": {
+            "type": "string",
+            "description": "At most 20 words."
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Root task ids."
+          },
+          "channel": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Channel id or name, or \"general\"."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_group",
+      "description": "Ungroup: the group goes, its tasks stay where they are.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Group id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "put_channel",
+      "description": "Create a channel in a space (no id) or rename one. Names are lowercase-with-dashes.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Rename this channel; omit to create."
+          },
+          "name": {
+            "type": "string",
+            "description": "Channel name."
+          },
+          "space": {
+            "type": "string",
+            "description": "Space id or name; default the open one."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_channel",
+      "description": "Delete a channel; its groups read as #general.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Channel id."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "put_project",
+      "description": "Create a project space (no id) or rename one. At most 9 projects, names up to 20 characters.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Rename this project; omit to create."
+          },
+          "name": {
+            "type": "string",
+            "description": "Project name."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

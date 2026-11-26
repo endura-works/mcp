@@ -1,0 +1,20 @@
+{
+  "manifest_version": "0.3",
+  "name": "microtasks",
+  "display_name": "Microtasks",
+  "version": "1.0.0",
+  "description": "Let Claude read and change your Microtasks board, open in your browser.",
+  "long_description": "Connects Claude Desktop to the Microtasks tab in your browser (https://microtasks.endura.works). Claude can read the board, push a whole breakdown of tasks, microtasks and nanotasks with notes, edit, regroup, and move tasks to the Recycle bin. Runs on your computer; nothing leaves it. Open https://microtasks.endura.works/#mcp once to connect.",
+  "author": { "name": "Endura", "url": "https://endura.works" },
+  "homepage": "https://microtasks.endura.works",
+  "repository": { "type": "git", "url": "https://github.com/endura-works/mcp" },
+  "license": "MIT",
+  "keywords": ["tasks", "todo", "planning", "breakdown"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/cli.js",
+    "mcp_config": { "command": "node", "args": ["${__dirname}/dist/cli.js"] }
+  },
+  "tools_generated": true,
+  "compatibility": { "platforms": ["darwin", "win32", "linux"], "runtimes": { "node": ">=20.0.0" } }
+}

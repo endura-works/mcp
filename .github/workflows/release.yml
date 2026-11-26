@@ -1,0 +1,67 @@
+# Tag microtasks-mcp@<version> → npm (trusted publishing, provenance), the .mcpb
+# on the GitHub release, the MCP Registry listing. No long-lived npm token.
+name: Release microtasks-mcp
+on:
+  push:
+    tags: ['microtasks-mcp@*']
+permissions:
+  contents: read
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # npm trusted publishing (OIDC)
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - name: Tag matches the package version
+        run: |
+          v="$(node -p "require('./packages/microtasks-mcp/package.json').version")"
+          test "${GITHUB_REF_NAME}" = "microtasks-mcp@${v}" || { echo "tag ${GITHUB_REF_NAME} != microtasks-mcp@${v}"; exit 1; }
+      - run: npm install -g npm@latest   # trusted publishing needs npm >= 11.5.1
+      - run: npm test
+      - run: npm publish -w @endura.works/microtasks-mcp
+
+  mcpb:
+    needs: npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # the GitHub release and its asset
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: npm run build
+      - name: Pack microtasks.mcpb
+        run: |
+          mkdir -p stage
+          cp -r packages/microtasks-mcp/dist packages/microtasks-mcp/package.json packages/microtasks-mcp/manifest.json packages/microtasks-mcp/README.md packages/microtasks-mcp/LICENSE stage/
+          npx -y @anthropic-ai/mcpb pack stage microtasks.mcpb
+      - name: Release with the bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" microtasks.mcpb --title "${GITHUB_REF_NAME}" --notes "npm: https://www.npmjs.com/package/@endura.works/microtasks-mcp — Claude Desktop: download microtasks.mcpb and double-click it."
+
+  registry:
+    needs: npm
+    runs-on: ubuntu-latest
+    environment: mcp-registry-publish   # holds MCP_PRIVATE_KEY (Ed25519, hex); protect it
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mcp-publisher
+        run: |
+          os="$(uname -s | tr '[:upper:]' '[:lower:]')"; arch="$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_${os}_${arch}.tar.gz" | tar xz mcp-publisher
+      - name: Log in (DNS, endura.works)
+        env:
+          MCP_PRIVATE_KEY: ${{ secrets.MCP_PRIVATE_KEY }}
+        run: ./mcp-publisher login dns --domain endura.works
+      - name: Publish works.endura/microtasks
+        working-directory: packages/microtasks-mcp
+        run: ../../mcp-publisher publish

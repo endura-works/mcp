@@ -1,0 +1,14 @@
+{
+  "name": "endura-mcp",
+  "private": true,
+  "description": "MCP pipes for Endura products: Microtasks now, Trail later.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node --test \"packages/microtasks-mcp/test/*.test.mjs\"",
+    "snapshot": "node scripts/snapshot.mjs"
+  }
+}

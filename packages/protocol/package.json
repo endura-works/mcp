@@ -1,0 +1,9 @@
+{
+  "name": "@endura.works/mcp-protocol",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Endura pipe protocol v1. Bundled into each pipe package; not published.",
+  "license": "MIT",
+  "type": "module",
+  "main": "protocol.js"
+}

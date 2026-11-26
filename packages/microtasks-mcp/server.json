@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "works.endura/microtasks",
+  "title": "Microtasks",
+  "description": "Let AI read and change your Microtasks board: tasks, breakdowns, groups, channels.",
+  "websiteUrl": "https://microtasks.endura.works",
+  "repository": {
+    "url": "https://github.com/endura-works/mcp",
+    "source": "github",
+    "subfolder": "packages/microtasks-mcp"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@endura.works/microtasks-mcp",
+      "version": "1.0.0",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}
