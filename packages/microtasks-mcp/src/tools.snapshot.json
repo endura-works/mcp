@@ -3,7 +3,7 @@
   "tools": [
     {
       "name": "get_board",
-      "description": "Read the board: its spaces (Essential, projects) and channels, then one space's task trees (id, title, status, depth, due, group; no notes) and groups. Tasks nest three levels: task, microtask, nanotask.",
+      "description": "Read the board: its spaces (Essential, projects) and channels, then one space's task trees (id, title, status, depth, due, group; no notes) and groups. Tasks nest up to three levels: task, microtask, nanotask (most need two).",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
@@ -46,7 +46,7 @@
     },
     {
       "name": "put_task",
-      "description": "Create a task (no id) or edit one (with id). parent makes it a sub-task (three levels at most). children adds a whole breakdown in one call (at most 100 tasks): send each workstream as one root with all its children. Titles: verb first, 10 words or fewer; detail, commands and links in note. 3 to 7 children per task. A parent's status is derived from its children. The app lays the boxes out after every write; never send coordinates.",
+      "description": "Create a task (no id) or edit one (with id). parent makes it a sub-task (three levels at most). children adds a whole breakdown in one call (at most 100 tasks): send each workstream as one root with all its children. Titles: verb first, 10 words or fewer; detail, commands and links in note. Depth is earned: a task gets sub-tasks only when it can't be finished in one sitting. Most breakdowns are two levels (task, microtasks); add nanotasks only under a microtask that is itself unclear or many steps. Never add a level to group or number steps (no \"3.1–3.2\" parents): a flat list of up to 12 steps is fine, the app hangs long lists below. A parent's status is derived from its children. The app lays the boxes out after every write; never send coordinates.",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
@@ -268,7 +268,7 @@
     },
     {
       "name": "arrange",
-      "description": "Tidy boxes already on the board: a task's tree, a group (its trees stacked) or a whole space (groups side by side). Long titles wrap to two lines, children line up in columns, long lists hang below. Never needed after your own writes: they are arranged already.",
+      "description": "Tidy boxes already on the board: a task's tree, a group (its trees stacked) or a whole space (groups side by side). Re-fits title widths (one line to ~55 characters, else two), children line up in columns, long lists hang below. Never needed after your own writes: they are arranged already.",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,

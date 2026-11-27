@@ -2,9 +2,9 @@
 // every log line goes to stderr. Tools come from the bridge (the tab's hello).
 export const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];   // newest first
 
-const INSTRUCTIONS = 'Microtasks is a task board: tasks break down into microtasks and nanotasks (three levels), '
+const INSTRUCTIONS = 'Microtasks is a task board: tasks break down into microtasks and, only where needed, nanotasks (three levels at most), '
   + 'shown as boxes joined by arrows, in spaces (Essential and projects). Read with get_board before changing; '
-  + 'create a whole breakdown in one put_task with children; titles are at most 20 words, so put detail in note. '
+  + 'create a whole breakdown in one put_task with children; prefer two levels, a layer must be real work, never a heading; titles are at most 20 words, so put detail in note. '
   + 'Deletes go to the Recycle bin (restore_task brings them back). Results carry ids for the next call.';
 
 /** Map one tab result to an MCP CallToolResult. */
