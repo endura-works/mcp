@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "microtasks",
   "display_name": "Microtasks",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Let Claude read and change your Microtasks board, open in your browser.",
   "long_description": "Connects Claude Desktop to the Microtasks tab in your browser (https://microtasks.endura.works). Claude can read the board, push a whole breakdown of tasks, microtasks and nanotasks with notes, edit, regroup, and move tasks to the Recycle bin. Runs on your computer; nothing leaves it. Open https://microtasks.endura.works/#mcp once to connect.",
   "author": { "name": "Endura", "url": "https://endura.works" },

@@ -46,7 +46,7 @@
     },
     {
       "name": "put_task",
-      "description": "Create a task (no id) or edit one (with id). parent makes it a sub-task (three levels at most). children adds a whole breakdown in one call (at most 100 tasks). A parent's status is derived from its children. The app places boxes; never send coordinates.",
+      "description": "Create a task (no id) or edit one (with id). parent makes it a sub-task (three levels at most). children adds a whole breakdown in one call (at most 100 tasks): send each workstream as one root with all its children. Titles: verb first, 10 words or fewer; detail, commands and links in note. 3 to 7 children per task. A parent's status is derived from its children. The app lays the boxes out after every write; never send coordinates.",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
@@ -80,6 +80,26 @@
             ],
             "description": "YYYY-MM-DD, or null to clear."
           },
+          "pin": {
+            "type": "boolean",
+            "description": "Show its note as a card beside the box: rules, reference, decisions."
+          },
+          "fold": {
+            "type": "boolean",
+            "description": "Fold its sub-tasks into the box (compact)."
+          },
+          "open": {
+            "type": "boolean",
+            "description": "List its nanotasks inside its menu."
+          },
+          "layout": {
+            "type": "string",
+            "description": "How its children stand: \"right\" a column beside it, \"below\" a list hanging under it. Default: the app picks (below past 5 leaves).",
+            "enum": [
+              "right",
+              "below"
+            ]
+          },
           "children": {
             "type": "array",
             "description": "New sub-tasks under it.",
@@ -111,6 +131,26 @@
                 "due": {
                   "type": "string",
                   "description": "YYYY-MM-DD."
+                },
+                "pin": {
+                  "type": "boolean",
+                  "description": "Show its note as a card beside the box: rules, reference, decisions."
+                },
+                "fold": {
+                  "type": "boolean",
+                  "description": "Fold its sub-tasks into the box (compact)."
+                },
+                "open": {
+                  "type": "boolean",
+                  "description": "List its nanotasks inside its menu."
+                },
+                "layout": {
+                  "type": "string",
+                  "description": "How its children stand: \"right\" a column beside it, \"below\" a list hanging under it. Default: the app picks (below past 5 leaves).",
+                  "enum": [
+                    "right",
+                    "below"
+                  ]
                 },
                 "children": {
                   "type": "array",
@@ -190,7 +230,7 @@
     },
     {
       "name": "put_group",
-      "description": "Create a group (no id) or edit one: a named dashed box round root tasks of one space, filed in a channel. tasks replaces its membership.",
+      "description": "Create a group (no id) or edit one: a named dashed box round root tasks of one space, filed in a channel. tasks replaces its membership; the app stacks them in the order sent, so send them in reading order.",
       "inputSchema": {
         "type": "object",
         "additionalProperties": false,
@@ -216,6 +256,38 @@
               "null"
             ],
             "description": "Channel id or name, or \"general\"."
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "arrange",
+      "description": "Tidy boxes already on the board: a task's tree, a group (its trees stacked) or a whole space (groups side by side). Long titles wrap to two lines, children line up in columns, long lists hang below. Never needed after your own writes: they are arranged already.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "A task id, a group id, or a space id or name."
+          },
+          "style": {
+            "type": "string",
+            "description": "\"auto\" (default), \"tree\" (every list beside its parent) or \"comb\" (the top task's list below it).",
+            "enum": [
+              "auto",
+              "tree",
+              "comb"
+            ]
           }
         }
       },
