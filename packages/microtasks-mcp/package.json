@@ -13,9 +13,26 @@
     "directory": "packages/microtasks-mcp"
   },
   "bugs": "https://github.com/endura-works/mcp/issues",
-  "keywords": ["mcp", "model-context-protocol", "microtasks", "tasks", "ai"],
-  "bin": { "microtasks-mcp": "dist/cli.js" },
-  "files": ["dist"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" }
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "microtasks",
+    "tasks",
+    "ai"
+  ],
+  "bin": {
+    "microtasks-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "node ../../scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

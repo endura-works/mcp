@@ -25,7 +25,10 @@ jobs:
           test "${GITHUB_REF_NAME}" = "microtasks-mcp@${v}" || { echo "tag ${GITHUB_REF_NAME} != microtasks-mcp@${v}"; exit 1; }
       - run: npm install -g npm@latest   # trusted publishing needs npm >= 11.5.1
       - run: npm test
-      - run: npm publish -w @endura.works/microtasks-mcp
+      - name: Publish (skipped if this version is already on npm, e.g. the first one published by hand)
+        run: |
+          v="$(node -p "require('./packages/microtasks-mcp/package.json').version")"
+          if npm view "@endura.works/microtasks-mcp@${v}" version >/dev/null 2>&1; then echo "${v} already on npm"; else npm publish -w @endura.works/microtasks-mcp; fi
 
   mcpb:
     needs: npm

@@ -1,41 +1,40 @@
-# MCP for Microtasks & Trail
+# Microtasks for AI apps
 
-The pipes that connect AI apps to Endura's browser apps. **The open browser tab is the MCP server**: it holds every tool and does all the work against its own local data. A pipe only carries messages, and it knows no tools and stores no data.
+Let your AI app work on your [Microtasks](https://microtasks.endura.works) board. Ask it to break a big job into tasks and "push it to Microtasks", and the tasks show up on your board with notes. It can also read, edit, group and tidy your tasks.
 
-| Path | What | Status |
-|---|---|---|
-| `packages/protocol` | The tab ⇄ pipe message format, v1. Bundled into each package; not published | v1 |
-| `packages/microtasks-mcp` | [`@endura.works/microtasks-mcp`](https://www.npmjs.com/package/@endura.works/microtasks-mcp): stdio MCP ⇄ `ws://127.0.0.1:47321` ⇄ the Microtasks tab | 1.0 |
-| `packages/trail-mcp` | `@endura.works/trail-mcp` | later |
-| `relay/` | Cloudflare Worker at `mcp.endura.works/<product>`, for chat apps that only take a remote MCP URL | later |
+Everything stays on your computer.
 
-No runtime dependencies. Plain ES modules, no build step beyond copying the protocol in (`npm run build`).
+## Install
 
-## Develop
-
+**Claude Code**
 ```sh
-npm test                     # build + node --test (WebSocket framing, pairing, retries, stdio MCP)
-node packages/microtasks-mcp/dist/cli.js --url http://127.0.0.1:8391/chrome/tasks.html
-claude mcp add microtasks-dev -- node "$PWD/packages/microtasks-mcp/dist/cli.js"
+claude mcp add microtasks -- npx -y @endura.works/microtasks-mcp
 ```
 
-Run the app locally (`python3 -m http.server 8391` in the Microtasks repo) and open `http://127.0.0.1:8391/chrome/tasks.html#mcp`.
+**Codex**
+```sh
+codex mcp add microtasks -- npx -y @endura.works/microtasks-mcp
+```
 
-**Tool snapshot:** `tools/list` must answer before a tab connects, so the package ships `src/tools.snapshot.json`, a copy of the tab's `hello`. After a tool changes in the app, refresh it: in the app with `localStorage['microtasks.agent']='1'`, run `copy(JSON.stringify(await microtasksAgent.hello()))`, save it as `hello.json`, then run `npm run snapshot -- hello.json`. Once a tab connects, its own list replaces the snapshot (`notifications/tools/list_changed`).
+**Gemini CLI, Cursor, VS Code, LM Studio and other apps**
+```json
+{
+  "mcpServers": {
+    "microtasks": { "command": "npx", "args": ["-y", "@endura.works/microtasks-mcp"] }
+  }
+}
+```
 
-## Release (`microtasks-mcp`)
+**Claude Desktop:** download `microtasks.mcpb` from [Releases](https://github.com/endura-works/mcp/releases) and double-click it.
 
-1. Bump `version` in `package.json`, `manifest.json` and `server.json` (both places). `npm run build` refuses a mismatch.
-2. Tag and push: `git tag microtasks-mcp@1.0.1 && git push --tags`.
-3. `.github/workflows/release.yml` does the rest:
-   - `npm publish` through trusted publishing, so provenance is attached and no token is stored;
-   - builds `microtasks.mcpb` and attaches it to the GitHub release;
-   - publishes `works.endura/microtasks` to the MCP Registry with DNS auth.
+You need [Node.js](https://nodejs.org) 20 or newer (Claude Desktop already includes it).
 
-## Privacy
+## Connect
 
-The local pipe never leaves your computer. The future cloud relay will pass messages through Endura's Worker without storing them.
+Open **https://microtasks.endura.works/#mcp** in Chrome, Edge or Firefox. If the browser asks to allow local network access, allow it. The **Connect AI** panel then says *Connected*.
+
+Keep that tab open while you work with your AI app.
 
 ## License
 
-MIT. Anyone may run or self-host these pipes.
+MIT
