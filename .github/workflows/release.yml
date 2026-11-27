@@ -63,6 +63,16 @@ jobs:
         run: |
           os="$(uname -s | tr '[:upper:]' '[:lower:]')"; arch="$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
           curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_${os}_${arch}.tar.gz" | tar xz mcp-publisher
+      - name: Wait for npm to serve the new version
+        # npm validates a new version before serving it (minutes); the registry checks npm and refuses until then.
+        run: |
+          v="$(node -p "require('./packages/microtasks-mcp/package.json').version")"
+          for i in $(seq 1 60); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/@endura.works%2fmicrotasks-mcp/${v}")"
+            [ "$code" = 200 ] && { echo "npm serves ${v}"; exit 0; }
+            echo "npm: ${v} not served yet (${code}), retry in 15s"; sleep 15
+          done
+          echo "npm never served ${v} within 15 min; re-run this job later"; exit 1
       - name: Log in (DNS, endura.works)
         env:
           MCP_PRIVATE_KEY: ${{ secrets.MCP_PRIVATE_KEY }}
