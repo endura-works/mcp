@@ -49,7 +49,9 @@ jobs:
       - name: Release with the bundle
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" microtasks.mcpb --title "${GITHUB_REF_NAME}" --notes "npm: https://www.npmjs.com/package/@endura.works/microtasks-mcp — Claude Desktop: download microtasks.mcpb and double-click it."
+        run: |
+          gh release create "${GITHUB_REF_NAME}" microtasks.mcpb --title "${GITHUB_REF_NAME}" \
+            --notes "npm: https://www.npmjs.com/package/@endura.works/microtasks-mcp — Claude Desktop: download microtasks.mcpb and double-click it."
 
   registry:
     needs: npm

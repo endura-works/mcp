@@ -8,7 +8,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node scripts/build.mjs && node --test \"packages/microtasks-mcp/test/*.test.mjs\"",
+    "test": "node scripts/build.mjs && node --test packages/microtasks-mcp/test/ws.test.mjs packages/microtasks-mcp/test/bridge.test.mjs packages/microtasks-mcp/test/stdio.test.mjs",
     "snapshot": "node scripts/snapshot.mjs"
   }
 }
