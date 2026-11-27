@@ -9,12 +9,12 @@
     "source": "github",
     "subfolder": "packages/microtasks-mcp"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@endura.works/microtasks-mcp",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "transport": { "type": "stdio" }
     }
   ]

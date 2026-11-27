@@ -1,6 +1,6 @@
 {
   "name": "@endura.works/microtasks-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for Microtasks: let an AI app read and change the task board open in your browser.",
   "mcpName": "works.endura/microtasks",
   "license": "MIT",
